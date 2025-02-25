@@ -1,0 +1,412 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --oscar-gold: #C4A962;
+  --oscar-dark-gold: #B69A52;
+  --oscar-black: #1A1A1A;
+  --oscar-white: #FFFFFF;
+  --oscar-gray: #2C2C2C;
+  --oscar-light-gray: #E5E5E5;
+}
+
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--oscar-black);
+  background-color: var(--oscar-black);
+  background-image: linear-gradient(45deg, #1a1a1a 25%, #242424 25%, #242424 50%, #1a1a1a 50%, #1a1a1a 75%, #242424 75%, #242424 100%);
+  background-size: 20px 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Header styles */
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+  position: relative;
+}
+
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 3px;
+  background: var(--oscar-gold);
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  color: var(--oscar-gold);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 300;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Voting form styles */
+.voting-form {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--oscar-gray);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--oscar-gold);
+}
+
+.voting-form h2 {
+  color: var(--oscar-gold);
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+/* Nominee card styles */
+.nominees-list {
+  margin-bottom: 2rem;
+}
+
+.nominee-card {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--oscar-gold);
+  border-radius: 8px;
+  background: var(--oscar-black);
+  cursor: move;
+  transition: all 0.3s ease;
+}
+
+.nominee-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(196, 169, 98, 0.2);
+  border-color: var(--oscar-dark-gold);
+}
+
+.nominee-rank {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-right: 1.5rem;
+  color: var(--oscar-gold);
+  width: 40px;
+  text-align: center;
+  font-family: 'Times New Roman', serif;
+}
+
+.nominee-title {
+  flex-grow: 1;
+  font-size: 1.1rem;
+  color: var(--oscar-white);
+  letter-spacing: 0.5px;
+}
+
+/* Button styles */
+.button {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 2rem auto 0;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--oscar-black);
+  background-color: var(--oscar-gold);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.button:hover {
+  background-color: var(--oscar-dark-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(196, 169, 98, 0.3);
+}
+
+.button:disabled {
+  background-color: var(--oscar-light-gray);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Loading and error states */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--oscar-gold);
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+}
+
+.error {
+  color: #e74c3c;
+  text-align: center;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  background: rgba(231, 76, 60, 0.1);
+  border-radius: 8px;
+  border: 1px solid #e74c3c;
+}
+
+/* Drag and drop visual feedback */
+.nominee-card.dragging {
+  opacity: 0.5;
+  border: 2px dashed var(--oscar-gold);
+}
+
+/* Animation for rank changes */
+@keyframes rankChange {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.nominee-rank.changed {
+  animation: rankChange 0.3s ease;
+}
+
+.auth-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--oscar-gray);
+  border-radius: 8px;
+  border: 1px solid var(--oscar-gold);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.auth-form h2 {
+  color: var(--oscar-gold);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid var(--oscar-gold);
+  border-radius: 4px;
+  background: var(--oscar-black);
+  color: var(--oscar-white);
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: var(--oscar-dark-gold);
+  box-shadow: 0 0 0 2px rgba(196, 169, 98, 0.2);
+}
+
+.success-message {
+  color: #10B981;
+  text-align: center;
+  padding: 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 4px;
+}
+
+.error-message {
+  color: #EF4444;
+  text-align: center;
+  padding: 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 4px;
+}
+
+/* Admin Panel Styles */
+.admin-panel {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: var(--oscar-gray);
+  border-radius: 8px;
+  border: 1px solid var(--oscar-gold);
+}
+
+.admin-panel h2 {
+  color: var(--oscar-gold);
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+}
+
+.calculate-button {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto 2rem;
+  display: block;
+}
+
+.results-container {
+  margin-top: 2rem;
+}
+
+.winner-section {
+  background: var(--oscar-black);
+  padding: 2rem;
+  border-radius: 8px;
+  border: 2px solid var(--oscar-gold);
+  margin-bottom: 2rem;
+}
+
+.winner-section h3 {
+  color: var(--oscar-gold);
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.winner-card {
+  background: var(--oscar-gray);
+  padding: 1.5rem;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 1.8rem;
+  color: var(--oscar-gold);
+  font-weight: bold;
+}
+
+.rounds-section {
+  background: var(--oscar-black);
+  padding: 2rem;
+  border-radius: 8px;
+}
+
+.rounds-section h3 {
+  color: var(--oscar-gold);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.round-card {
+  background: var(--oscar-gray);
+  padding: 1.5rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.round-card h4 {
+  color: var(--oscar-gold);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.vote-counts {
+  margin-bottom: 1rem;
+}
+
+.vote-count-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(196, 169, 98, 0.2);
+}
+
+.vote-count-item:last-child {
+  border-bottom: none;
+}
+
+.nominee-name {
+  color: var(--oscar-white);
+}
+
+.vote-count {
+  color: var(--oscar-gold);
+}
+
+.eliminated-nominee {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  color: #e74c3c;
+  background: rgba(231, 76, 60, 0.1);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.nominees-info {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(196, 169, 98, 0.1);
+  border-radius: 4px;
+  color: var(--oscar-gold);
+}
+
+.nominees-info p {
+  margin-bottom: 0.5rem;
+}
+
+.error-message {
+  color: #e74c3c;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: rgba(231, 76, 60, 0.1);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.submit-section {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.debug-info {
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.debug-info pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .voting-form {
+    padding: 1.5rem;
+  }
+
+  .nominee-card {
+    padding: 0.8rem;
+  }
+
+  .nominee-rank {
+    font-size: 1.2rem;
+    margin-right: 1rem;
+  }
+
+  .nominee-title {
+    font-size: 1rem;
+  }
+}
