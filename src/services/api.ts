@@ -1,6 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 import { Vote, Nominee } from '../types';
 
+const SITE_URL = import.meta.env.PROD 
+  ? 'https://oscarvotingsystemsimulator.netlify.app'
+  : 'http://localhost:3000';
+
 export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY
@@ -44,7 +48,7 @@ export const api = {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: SITE_URL,
       }
     });
     if (error) throw error;

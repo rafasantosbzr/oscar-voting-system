@@ -44,7 +44,7 @@ export default function App() {
     );
   }
 
-  const isAdmin = user.email === 'rafasantosbzr@icloud.com'; // Replace with your email
+  const isAdmin = user.email === 'rafasantosbzr@gmail.com';
 
   return (
     <div className="container">
