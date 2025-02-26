@@ -44,61 +44,53 @@
 
 .verification-modal {
   background: var(--oscar-gray);
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid var(--oscar-gold);
   max-width: 400px;
   width: 90%;
+  text-align: center;
+}
+
+.verification-modal h2 {
+  color: var(--oscar-gold);
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 300;
 }
 
 .verification-modal p {
-  color: var(--oscar-white);
+  color: #E5E5E5;
   margin-bottom: 1rem;
   line-height: 1.6;
+  font-size: 1.1rem;
 }
 
 .verification-modal strong {
   color: var(--oscar-gold);
 }
 
-.verification-modal h3 {
+.verification-button {
+  background: transparent;
   color: var(--oscar-gold);
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
-  font-weight: 300;
-  letter-spacing: 1px;
+  border: 2px solid var(--oscar-gold);
+  padding: 0.8rem 2.5rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
   text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 1rem;
 }
 
-
-.verification-modal .close-button {
+.verification-button:hover {
   background: var(--oscar-gold);
   color: var(--oscar-black);
-  border: none;
-  padding: 1rem 2.5rem;
-  border-radius: 50px;
-  cursor: pointer;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
-  margin-top: 1rem;
-  font-size: 1rem;
-}
-
-.verification-modal .close-button:hover {
-  background-color: var(--oscar-dark-gold);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(196, 169, 98, 0.3);
-}
-
-.verification-icon {
-  color: var(--oscar-gold);
-  margin-bottom: 1.5rem;
-  font-size: 2.5rem;
-}
-
-.verification-icon svg {
-  width: 48px;
-  height: 48px;
-  fill: var(--oscar-gold);
 }
 
 @keyframes spin {

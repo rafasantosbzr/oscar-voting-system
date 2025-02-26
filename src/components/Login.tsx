@@ -6,20 +6,21 @@ const LoadingSpinner = () => (
 );
 
 const VerificationModal = ({ onClose }: { onClose: () => void }) => (
-  <div className="auth-container verification-overlay">
-    <div className="auth-form verification-modal">
+  <div className="verification-overlay">
+    <div className="verification-modal">
       <h2>Verifique seu Email</h2>
-      <p>
-        Enviamos um link de confirmação para o seu email.
-        Por favor, verifique sua caixa de entrada e clique no link para ativar sua conta.
-      </p>
-      <p>
-        <strong>Importante:</strong> Não se esqueça de verificar também sua pasta de spam!
-      </p>
+      <div className="verification-content">
+        <p>
+          Enviamos um link de confirmação para o seu email.
+          Por favor, verifique sua caixa de entrada e clique no link para ativar sua conta.
+        </p>
+        <p>
+          <strong>Importante:</strong> Não se esqueça de verificar também sua pasta de spam!
+        </p>
+      </div>
       <button 
         onClick={onClose} 
-        className="button"
-        style={{ marginTop: '1rem' }}
+        className="verification-button"
       >
         Entendi
       </button>
