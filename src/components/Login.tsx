@@ -10,12 +10,25 @@ const VerificationModal = ({ onClose }: { onClose: () => void }) => (
     <div className="verification-modal">
       <h2>Verifique seu Email</h2>
       <div className="verification-content">
-        <p className="modal-text">
+        <p style={{
+          color: 'var(--oscar-gold)',
+          fontSize: '1.1rem',
+          lineHeight: '1.8',
+          marginBottom: '1.5rem',
+          textAlign: 'center'
+        }}>
           Enviamos um link de confirmação para o seu email.
           Por favor, verifique sua caixa de entrada e clique no link para ativar sua conta.
         </p>
-        <p className="modal-text">
-          <strong>Importante:</strong> Não se esqueça de verificar também sua pasta de spam!
+        <p style={{
+          color: 'var(--oscar-gold)',
+          fontSize: '1.1rem',
+          lineHeight: '1.8',
+          textAlign: 'center'
+        }}>
+          <strong style={{ color: 'var(--oscar-white)' }}>
+            Importante:
+          </strong> Não se esqueça de verificar também sua pasta de spam!
         </p>
       </div>
       <button 
