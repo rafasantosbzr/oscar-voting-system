@@ -31,14 +31,16 @@ export const VotingForm: React.FC<Props> = ({ nominees, onSubmit, loading }) => 
     }
   };
 
-  const handleDragStart = (e: React.DragEvent, nominee: Nominee) => {
+  const handleDragStart = (e: React.DragEvent | TouchEvent, nominee: Nominee) => {
     setDraggedNominee(nominee);
   };
 
-  const handleDrop = (e: React.DragEvent, target: Nominee) => {
-    e.preventDefault();
+  const handleDrop = (e: React.DragEvent | TouchEvent, target: Nominee) => {
+    if (e instanceof DragEvent) {
+      e.preventDefault();
+    }
     
-    if (!draggedNominee) {
+    if (!draggedNominee || draggedNominee.id === target.id) {
       return;
     }
 
@@ -46,11 +48,35 @@ export const VotingForm: React.FC<Props> = ({ nominees, onSubmit, loading }) => 
     const draggedIndex = rankings.findIndex(n => n.id === draggedNominee.id);
     const targetIndex = rankings.findIndex(n => n.id === target.id);
 
+    // Remove dragged item
     newRankings.splice(draggedIndex, 1);
+    // Insert at new position
     newRankings.splice(targetIndex, 0, draggedNominee);
 
     setRankings(newRankings);
     setDraggedNominee(null);
+  };
+
+  const findNomineeFromPoint = (x: number, y: number): Nominee | null => {
+    const elements = document.elementsFromPoint(x, y);
+    for (const element of elements) {
+      const nomineeId = element.getAttribute('data-nominee-id');
+      if (nomineeId) {
+        return rankings.find(n => n.id === parseInt(nomineeId)) || null;
+      }
+    }
+    return null;
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    if (!draggedNominee) return;
+
+    const touch = e.touches[0];
+    const nominee = findNomineeFromPoint(touch.clientX, touch.clientY);
+    
+    if (nominee && nominee.id !== draggedNominee.id) {
+      handleDrop(e, nominee);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -92,12 +118,15 @@ export const VotingForm: React.FC<Props> = ({ nominees, onSubmit, loading }) => 
   }
 
   return (
-    <div className="voting-form">
+    <div 
+      className="voting-form"
+      onTouchMove={handleTouchMove as any}
+    >
       <h2>Classifique seus indicados</h2>
       {error && <div className="error-message">{error}</div>}
       
       <div className="nominees-info">
-        <p>Arraste e solte para reordenar os indicados de acordo com sua preferência.</p>
+        <p>Arraste e solte (ou toque e segure no mobile) para reordenar os indicados.</p>
         <p>1 sendo sua principal escolha e {nominees.length} sendo sua última escolha.</p>
       </div>
 
