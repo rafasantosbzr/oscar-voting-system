@@ -11,6 +11,7 @@ const VerificationModal = ({ onClose }: { onClose: () => void }) => (
       <h2 style={{
         color: 'var(--oscar-gold)',
         fontSize: '20px',
+        marginTop: '2rem',
         marginBottom: '2rem',
         letterSpacing: '2px',
         textTransform: 'uppercase',
