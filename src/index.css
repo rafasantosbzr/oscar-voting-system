@@ -400,6 +400,49 @@ body {
   color: var(--oscar-white);
 }
 
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid var(--oscar-gold);
+  border-radius: 4px;
+  background: var(--oscar-black);
+  color: var(--oscar-white);
+  font-size: 1rem;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: var(--oscar-dark-gold);
+  box-shadow: 0 0 0 2px rgba(196, 169, 98, 0.2);
+}
+
+.switch-auth-button {
+  background: none;
+  border: none;
+  color: var(--oscar-gold);
+  cursor: pointer;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  text-decoration: underline;
+}
+
+.switch-auth-button:hover {
+  color: var(--oscar-dark-gold);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .container {

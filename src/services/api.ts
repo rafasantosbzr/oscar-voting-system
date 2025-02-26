@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { Vote, Nominee } from '../types';
 
 const SITE_URL = import.meta.env.PROD 
-  ? 'https://your-site-name.netlify.app'
+  ? 'https://oscarvotingsystemsimulator.netlify.app'
   : 'http://localhost:3000';
 
 export const supabase = createClient(
@@ -87,9 +87,10 @@ export const api = {
     return data || [];
   },
 
-  async signInWithEmail(email: string) {
-    const { error } = await supabase.auth.signInWithOtp({
+  async signUp(email: string, password: string) {
+    const { error } = await supabase.auth.signUp({
       email,
+      password,
       options: {
         emailRedirectTo: SITE_URL,
       }
@@ -97,8 +98,36 @@ export const api = {
     if (error) throw error;
   },
 
+  async signIn(email: string, password: string) {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+    if (error) throw error;
+  },
+
   async signOut() {
     const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  },
+
+  async getCurrentUser() {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error) throw error;
+    return user;
+  },
+
+  async resetPassword(email: string) {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${SITE_URL}/reset-password`,
+    });
+    if (error) throw error;
+  },
+
+  async updatePassword(newPassword: string) {
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
+    });
     if (error) throw error;
   }
 };
