@@ -10,17 +10,17 @@ const VerificationModal = ({ onClose }: { onClose: () => void }) => (
     <div className="verification-modal">
       <h2>Verifique seu Email</h2>
       <div className="verification-content">
-        <div className="white-text">
+        <p className="white-text">
           Enviamos um link de confirmação para o seu email.
           Por favor, verifique sua caixa de entrada e clique no link para ativar sua conta.
-        </div>
-        <div className="white-text">
+        </p>
+        <p className="white-text">
           <strong>Importante:</strong> Não se esqueça de verificar também sua pasta de spam!
-        </div>
+        </p>
       </div>
       <button 
         onClick={onClose} 
-        className="modern-button"
+        className="button"
       >
         Entendi
       </button>
