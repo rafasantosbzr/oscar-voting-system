@@ -29,23 +29,13 @@
   animation: spin 1s linear infinite;
 }
 
-.verification-message {
-  background-color: rgba(196, 169, 98, 0.1);
-  border: 1px solid var(--oscar-gold);
-  color: var(--oscar-gold);
-  padding: 1rem;
-  margin-top: 1rem;
-  border-radius: 4px;
-  text-align: center;
-}
-
 .verification-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.9);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -54,46 +44,63 @@
 
 .verification-modal {
   background: var(--oscar-gray);
-  padding: 2rem;
+  padding: 2.5rem;
   border-radius: 8px;
-  border: 1px solid var(--oscar-gold);
+  border: 2px solid var(--oscar-gold);
   max-width: 400px;
   width: 90%;
   text-align: center;
   position: relative;
+  box-shadow: 0 4px 20px rgba(196, 169, 98, 0.2);
 }
 
 .verification-modal h3 {
   color: var(--oscar-gold);
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: 300;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 .verification-modal p {
-  color: var(--oscar-white);
+  color: var(--oscar-light-gray);
   margin-bottom: 1.5rem;
-  line-height: 1.6;
+  line-height: 1.8;
+  font-size: 1.1rem;
 }
 
 .verification-modal .close-button {
   background: var(--oscar-gold);
   color: var(--oscar-black);
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  font-size: 1rem;
 }
 
 .verification-modal .close-button:hover {
   background-color: var(--oscar-dark-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(196, 169, 98, 0.3);
 }
 
 .verification-icon {
   color: var(--oscar-gold);
-  font-size: 3rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 2.5rem;
+}
+
+.verification-icon svg {
+  width: 48px;
+  height: 48px;
+  fill: var(--oscar-gold);
 }
 
 @keyframes spin {
