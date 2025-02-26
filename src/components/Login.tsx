@@ -15,9 +15,9 @@ export function Login() {
 
     try {
       await api.signInWithEmail(email);
-      setMessage('Check your email for the login link!');
+      setMessage('Verifique seu e-mail para o link de login!');
     } catch (err) {
-      setError('Failed to send login link. Please try again.');
+      setError('Falha ao enviar o link de login. Por favor, tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -26,13 +26,13 @@ export function Login() {
   return (
     <div className="auth-container">
       <form onSubmit={handleSubmit} className="auth-form">
-        <h2>Login to Vote</h2>
+        <h2>Entre Para Votar</h2>
         <div className="form-group">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
+            placeholder="Insira seu e-mail"
             required
             className="auth-input"
           />
@@ -42,7 +42,7 @@ export function Login() {
           className="button" 
           disabled={loading}
         >
-          {loading ? 'Sending...' : 'Send Magic Link'}
+          {loading ? 'Enviando...' : 'Envie o Link de Confirmação'}
         </button>
         {message && <div className="success-message">{message}</div>}
         {error && <div className="error-message">{error}</div>}

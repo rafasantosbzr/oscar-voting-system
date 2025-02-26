@@ -383,6 +383,23 @@ body {
   word-wrap: break-word;
 }
 
+.message-box {
+  text-align: center;
+  padding: 2rem;
+  background: var(--oscar-gray);
+  border-radius: 8px;
+  border: 1px solid var(--oscar-gold);
+}
+
+.message-box h2 {
+  color: var(--oscar-gold);
+  margin-bottom: 1rem;
+}
+
+.message-box p {
+  color: var(--oscar-white);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .container {
