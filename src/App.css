@@ -93,6 +93,39 @@
   font-weight: 600;
 }
 
+.social-button {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.social-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.social-button.google {
+  background-color: #4285f4;
+  color: white;
+}
+
+.social-button.facebook {
+  background-color: #3b5998;
+  color: white;
+}
+
+.social-button:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
@@ -193,4 +226,63 @@
   color: #dc3545;
   text-align: center;
   padding: 0.5rem;
+}
+
+.social-button {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: white;
+  color: #444;
+  border: 1px solid #ddd;
+  transition: background-color 0.2s;
+}
+
+.social-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.social-button.google {
+  background-color: white;
+  color: #444;
+}
+
+.social-button.google:hover:not(:disabled) {
+  background-color: #f8f8f8;
+}
+
+.google-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.social-button.google {
+  background-color: white;
+  color: #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  border: 1px solid #ddd;
+  transition: all 0.3s ease;
+}
+
+.social-button.google:hover:not(:disabled) {
+  background-color: #f8f8f8;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.social-button.google:active:not(:disabled) {
+  background-color: #eee;
 }

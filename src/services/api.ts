@@ -3,7 +3,7 @@ import { Vote, Nominee } from '../types';
 
 const SITE_URL = import.meta.env.PROD 
   ? 'https://oscarvotingsystemsimulator.netlify.app'
-  : 'http://localhost:3000';
+  : 'http://localhost:5173'; // Atualizado para porta do Vite
 
 export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -30,7 +30,6 @@ export const api = {
       throw new Error('User not authenticated');
     }
 
-    // Check if user has already voted
     const { data: existingVote } = await supabase
       .from('votes')
       .select('id')
@@ -52,7 +51,7 @@ export const api = {
       .single();
     
     if (error) {
-      if (error.code === '23505') { // Unique constraint violation
+      if (error.code === '23505') {
         throw new Error('You have already submitted a vote');
       }
       throw error;
@@ -87,21 +86,12 @@ export const api = {
     return data || [];
   },
 
-  async signUp(email: string, password: string) {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
+  async signInWithGoogle() {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
       options: {
-        emailRedirectTo: SITE_URL,
+        redirectTo: SITE_URL
       }
-    });
-    if (error) throw error;
-  },
-
-  async signIn(email: string, password: string) {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
     });
     if (error) throw error;
   },
@@ -115,19 +105,5 @@ export const api = {
     const { data: { user }, error } = await supabase.auth.getUser();
     if (error) throw error;
     return user;
-  },
-
-  async resetPassword(email: string) {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${SITE_URL}/reset-password`,
-    });
-    if (error) throw error;
-  },
-
-  async updatePassword(newPassword: string) {
-    const { error } = await supabase.auth.updateUser({
-      password: newPassword
-    });
-    if (error) throw error;
   }
 };
