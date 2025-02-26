@@ -10,17 +10,42 @@ const VerificationModal = ({ onClose }: { onClose: () => void }) => (
     <div className="verification-modal">
       <h2>Verifique seu Email</h2>
       <div className="verification-content">
-        <p>
+        <p style={{ color: '#FFFFFF' }}>
           Enviamos um link de confirmação para o seu email.
           Por favor, verifique sua caixa de entrada e clique no link para ativar sua conta.
         </p>
-        <p>
+        <p style={{ color: '#FFFFFF' }}>
           <strong>Importante:</strong> Não se esqueça de verificar também sua pasta de spam!
         </p>
       </div>
       <button 
         onClick={onClose} 
-        className="verification-button"
+        className="button"
+        style={{
+          background: 'transparent',
+          border: '2px solid var(--oscar-gold)',
+          color: 'var(--oscar-gold)',
+          padding: '0.8rem 2.5rem',
+          borderRadius: '25px',
+          fontSize: '1rem',
+          transition: 'all 0.3s ease',
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
+          marginTop: '1rem',
+          cursor: 'pointer',
+        }}
+        onMouseOver={(e) => {
+          e.currentTarget.style.background = 'var(--oscar-gold)';
+          e.currentTarget.style.color = 'var(--oscar-black)';
+          e.currentTarget.style.transform = 'translateY(-2px)';
+          e.currentTarget.style.boxShadow = '0 4px 12px rgba(196, 169, 98, 0.3)';
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.background = 'transparent';
+          e.currentTarget.style.color = 'var(--oscar-gold)';
+          e.currentTarget.style.transform = 'none';
+          e.currentTarget.style.boxShadow = 'none';
+        }}
       >
         Entendi
       </button>
