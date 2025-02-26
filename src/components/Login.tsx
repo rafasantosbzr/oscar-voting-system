@@ -59,7 +59,7 @@ export function Login() {
           className="button" 
           disabled={loading}
         >
-          {loading ? 'Processing...' : (isSignUp ? 'Crie sua conta' : 'Entrar')}
+          {loading ? 'Processando...' : (isSignUp ? 'Crie sua conta' : 'Entrar')}
         </button>
 
         <button 
