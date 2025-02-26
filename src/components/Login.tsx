@@ -5,9 +5,22 @@ const LoadingSpinner = () => (
   <div className="loading-spinner" />
 );
 
-const VerificationMessage = () => (
-  <div className="verification-message">
-    <p>Por favor, verifique seu email para ativar sua conta.</p>
+const VerificationModal = ({ onClose }: { onClose: () => void }) => (
+  <div className="verification-overlay">
+    <div className="verification-modal">
+      <div className="verification-icon">✉️</div>
+      <h3>Verifique seu Email</h3>
+      <p>
+        Enviamos um link de confirmação para o seu email.
+        Por favor, verifique sua caixa de entrada e clique no link para ativar sua conta.
+      </p>
+      <p>
+        <strong>Não se esqueça de verificar também sua pasta de spam!</strong>
+      </p>
+      <button onClick={onClose} className="close-button">
+        Entendi
+      </button>
+    </div>
   </div>
 );
 
@@ -17,7 +30,7 @@ export function Login() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showVerificationMessage, setShowVerificationMessage] = useState(false);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
 
   const validateForm = (): boolean => {
     if (!email.includes('@')) {
@@ -56,7 +69,10 @@ export function Login() {
     try {
       if (isSignUp) {
         await api.signUp(email, password);
-        setShowVerificationMessage(true);
+        setShowVerificationModal(true);
+        // Clear form after successful signup
+        setEmail('');
+        setPassword('');
       } else {
         await api.signIn(email, password);
       }
@@ -111,7 +127,7 @@ export function Login() {
           onClick={() => {
             setIsSignUp(!isSignUp);
             setError('');
-            setShowVerificationMessage(false);
+            setShowVerificationModal(false);
           }}
           className="switch-auth-button"
         >
@@ -119,8 +135,14 @@ export function Login() {
         </button>
 
         {error && <div className="error-message" role="alert">{error}</div>}
-        {showVerificationMessage && <VerificationMessage />}
       </form>
+
+      {showVerificationModal && (
+        <VerificationModal onClose={() => {
+          setShowVerificationModal(false);
+          setIsSignUp(false); // Switch back to login form
+        }} />
+      )}
     </div>
   );
 }
