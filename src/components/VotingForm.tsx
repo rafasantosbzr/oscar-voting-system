@@ -1,4 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { 
+  DndContext, 
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { Nominee } from '../types';
 import { NomineeCard } from './NomineeCard';
 import { api } from '../services/api';
@@ -11,9 +27,16 @@ interface Props {
 
 export const VotingForm: React.FC<Props> = ({ nominees, onSubmit, loading }) => {
   const [rankings, setRankings] = useState<Nominee[]>([]);
-  const [draggedNominee, setDraggedNominee] = useState<Nominee | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(TouchSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   useEffect(() => {
     checkIfUserHasVoted();
@@ -31,51 +54,20 @@ export const VotingForm: React.FC<Props> = ({ nominees, onSubmit, loading }) => 
     }
   };
 
-  const handleDragStart = (e: React.DragEvent | TouchEvent, nominee: Nominee) => {
-    setDraggedNominee(nominee);
-  };
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
 
-  const handleDrop = (e: React.DragEvent | TouchEvent, target: Nominee) => {
-    if (e instanceof DragEvent) {
-      e.preventDefault();
-    }
-    
-    if (!draggedNominee || draggedNominee.id === target.id) {
-      return;
-    }
+    if (over && active.id !== over.id) {
+      setRankings((items) => {
+        const oldIndex = items.findIndex(
+          (item) => item.id.toString() === active.id
+        );
+        const newIndex = items.findIndex(
+          (item) => item.id.toString() === over.id
+        );
 
-    const newRankings = [...rankings];
-    const draggedIndex = rankings.findIndex(n => n.id === draggedNominee.id);
-    const targetIndex = rankings.findIndex(n => n.id === target.id);
-
-    // Remove dragged item
-    newRankings.splice(draggedIndex, 1);
-    // Insert at new position
-    newRankings.splice(targetIndex, 0, draggedNominee);
-
-    setRankings(newRankings);
-    setDraggedNominee(null);
-  };
-
-  const findNomineeFromPoint = (x: number, y: number): Nominee | null => {
-    const elements = document.elementsFromPoint(x, y);
-    for (const element of elements) {
-      const nomineeId = element.getAttribute('data-nominee-id');
-      if (nomineeId) {
-        return rankings.find(n => n.id === parseInt(nomineeId)) || null;
-      }
-    }
-    return null;
-  };
-
-  const handleTouchMove = (e: TouchEvent) => {
-    if (!draggedNominee) return;
-
-    const touch = e.touches[0];
-    const nominee = findNomineeFromPoint(touch.clientX, touch.clientY);
-    
-    if (nominee && nominee.id !== draggedNominee.id) {
-      handleDrop(e, nominee);
+        return arrayMove(items, oldIndex, newIndex);
+      });
     }
   };
 
@@ -118,29 +110,35 @@ export const VotingForm: React.FC<Props> = ({ nominees, onSubmit, loading }) => 
   }
 
   return (
-    <div 
-      className="voting-form"
-      onTouchMove={handleTouchMove as any}
-    >
+    <div className="voting-form">
       <h2>Classifique seus indicados</h2>
       {error && <div className="error-message">{error}</div>}
       
       <div className="nominees-info">
-        <p>Arraste e solte (ou toque e segure no mobile) para reordenar os indicados.</p>
+        <p>Arraste e solte (ou toque e arraste no mobile) para reordenar os indicados.</p>
         <p>1 sendo sua principal escolha e {nominees.length} sendo sua última escolha.</p>
       </div>
 
-      <div className="nominees-list">
-        {rankings.map((nominee, index) => (
-          <NomineeCard
-            key={nominee.id}
-            nominee={nominee}
-            rank={index + 1}
-            onDragStart={handleDragStart}
-            onDrop={handleDrop}
-          />
-        ))}
-      </div>
+      <DndContext 
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext 
+          items={rankings.map(n => n.id.toString())}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="nominees-list">
+            {rankings.map((nominee, index) => (
+              <NomineeCard
+                key={nominee.id}
+                nominee={nominee}
+                rank={index + 1}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
 
       <div className="submit-section">
         <button

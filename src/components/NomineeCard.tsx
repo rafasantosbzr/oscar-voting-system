@@ -1,42 +1,36 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { Nominee } from '../types';
 
 interface Props {
   nominee: Nominee;
   rank: number;
-  onDragStart: (e: React.DragEvent, nominee: Nominee) => void;
-  onDrop: (e: React.DragEvent, nominee: Nominee) => void;
 }
 
-export const NomineeCard: React.FC<Props> = ({
-  nominee,
-  rank,
-  onDragStart,
-  onDrop
-}) => {
-  const [isDragging, setIsDragging] = useState(false);
+export const NomineeCard: React.FC<Props> = ({ nominee, rank }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: nominee.id.toString() });
 
-  const handleDragStart = (e: React.DragEvent) => {
-    setIsDragging(true);
-    onDragStart(e, nominee);
-  };
-
-  const handleDragEnd = () => {
-    setIsDragging(false);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
   };
 
   return (
     <div
+      ref={setNodeRef}
+      style={style}
       className={`nominee-card ${isDragging ? 'dragging' : ''}`}
-      draggable
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      onDragOver={handleDragOver}
-      onDrop={(e) => onDrop(e, nominee)}
+      {...attributes}
+      {...listeners}
     >
       <span className="nominee-rank">{rank}</span>
       <div className="nominee-title">{nominee.title}</div>
