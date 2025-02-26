@@ -2,14 +2,13 @@ import { Vote, Nominee, VotingResult } from '../types';
 
 export class PreferentialVotingCalculator {
   private readonly WINNING_THRESHOLD_PERCENTAGE = 0.5;
-  private readonly TOTAL_NOMINEES = 10;
-  private readonly POSITION_WEIGHTS = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]; // Weight for each position
+  private readonly INITIAL_NOMINEES = 10;
 
   calculateWinner(votes: Vote[], nominees: Nominee[]): VotingResult {
     this.validateInput(votes, nominees);
 
-    if (nominees.length !== this.TOTAL_NOMINEES) {
-      throw new Error('Must have exactly 10 nominees');
+    if (nominees.length !== this.INITIAL_NOMINEES) {
+      throw new Error('Must start with exactly 10 nominees');
     }
 
     let currentRound = 1;
@@ -60,21 +59,33 @@ export class PreferentialVotingCalculator {
 
       currentRound++;
 
-      if (currentRound > this.TOTAL_NOMINEES) {
+      if (activeNominees.length === 0) {
+        throw new Error('No winner could be determined');
+      }
+
+      if (currentRound > this.INITIAL_NOMINEES) {
         throw new Error('Voting exceeded maximum possible rounds');
       }
     }
   }
 
-  private calculateWeightedScores(votes: Vote[], nominees: Nominee[]): Map<number, number> {
+  private calculateWeightedScores(votes: Vote[], activeNominees: Nominee[]): Map<number, number> {
     const scores = new Map<number, number>();
-    nominees.forEach(nominee => scores.set(nominee.id, 0));
+    activeNominees.forEach(nominee => scores.set(nominee.id, 0));
 
     votes.forEach(vote => {
-      // Add weighted scores based on position
+      // Generate weights based on current number of active nominees
+      const weights = Array.from(
+        { length: activeNominees.length }, 
+        (_, i) => activeNominees.length - i
+      );
+
+      // Add weighted scores based on current position
       vote.rankings.forEach((nomineeId, index) => {
-        const weight = this.POSITION_WEIGHTS[index];
-        scores.set(nomineeId, (scores.get(nomineeId) || 0) + weight);
+        if (scores.has(nomineeId)) { // Only count active nominees
+          const weight = weights[index];
+          scores.set(nomineeId, (scores.get(nomineeId) || 0) + weight);
+        }
       });
     });
 
@@ -92,8 +103,6 @@ export class PreferentialVotingCalculator {
     weightedScores.forEach((score, nomineeId) => {
       const firstChoiceCount = firstChoiceVotes.get(nomineeId) || 0;
       
-      // Primary criterion: lowest weighted score
-      // Secondary criterion: fewest first-choice votes
       if (score < lowestScore || 
          (score === lowestScore && firstChoiceCount < lowestFirstChoiceVotes)) {
         lowestScore = score;
@@ -123,14 +132,14 @@ export class PreferentialVotingCalculator {
 
     votes.forEach(vote => {
       if (!Array.isArray(vote.rankings) || 
-          vote.rankings.length !== this.TOTAL_NOMINEES ||
+          vote.rankings.length !== this.INITIAL_NOMINEES ||
           !vote.rankings.every(r => typeof r === 'number')) {
-        throw new Error('Each vote must rank exactly 10 nominees');
+        throw new Error('Each initial vote must rank exactly 10 nominees');
       }
 
       // Check for duplicate rankings
       const uniqueRankings = new Set(vote.rankings);
-      if (uniqueRankings.size !== this.TOTAL_NOMINEES) {
+      if (uniqueRankings.size !== this.INITIAL_NOMINEES) {
         throw new Error('Each nominee must be given a unique ranking');
       }
     });
