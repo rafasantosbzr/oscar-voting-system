@@ -2,14 +2,14 @@ import { Vote, Nominee, VotingResult } from '../types';
 
 export class PreferentialVotingCalculator {
   private readonly WINNING_THRESHOLD_PERCENTAGE = 0.5;
-  private readonly MAX_NOMINEES = 10;
+  private readonly TOTAL_NOMINEES = 10;
+  private readonly POSITION_WEIGHTS = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]; // Weight for each position
 
   calculateWinner(votes: Vote[], nominees: Nominee[]): VotingResult {
-    // Input validation
     this.validateInput(votes, nominees);
 
-    if (nominees.length > this.MAX_NOMINEES) {
-      throw new Error('Maximum of 10 nominees allowed');
+    if (nominees.length !== this.TOTAL_NOMINEES) {
+      throw new Error('Must have exactly 10 nominees');
     }
 
     let currentRound = 1;
@@ -18,15 +18,14 @@ export class PreferentialVotingCalculator {
     const rounds = [];
     
     while (true) {
-      // Count current top choices for each ballot
-      const voteCounts = new Map<number, number>();
-      activeNominees.forEach(nominee => voteCounts.set(nominee.id, 0));
+      // Count first-choice votes
+      const firstChoiceVotes = new Map<number, number>();
+      activeNominees.forEach(nominee => firstChoiceVotes.set(nominee.id, 0));
       
-      // Count each ballot's highest remaining choice
       currentVotes.forEach(vote => {
         if (vote.rankings.length > 0) {
-          const topChoice = vote.rankings[0]; // First remaining choice
-          voteCounts.set(topChoice, (voteCounts.get(topChoice) || 0) + 1);
+          const firstChoice = vote.rankings[0];
+          firstChoiceVotes.set(firstChoice, (firstChoiceVotes.get(firstChoice) || 0) + 1);
         }
       });
 
@@ -34,72 +33,105 @@ export class PreferentialVotingCalculator {
       const totalVotes = currentVotes.length;
       const winningThreshold = totalVotes * this.WINNING_THRESHOLD_PERCENTAGE;
 
-      for (const [nomineeId, count] of voteCounts.entries()) {
+      for (const [nomineeId, count] of firstChoiceVotes.entries()) {
         if (count > winningThreshold) {
           return {
             winner: nominees.find(n => n.id === nomineeId)!,
-            rounds: [...rounds, { roundNumber: currentRound, voteCounts }]
+            rounds: [...rounds, { roundNumber: currentRound, voteCounts: firstChoiceVotes }]
           };
         }
       }
 
-      // Find nominee(s) with fewest votes
-      let minVotes = Infinity;
-      let eliminatedIds: number[] = [];
-      
-      voteCounts.forEach((count, nomineeId) => {
-        if (count === 0) return;
-        if (count < minVotes) {
-          minVotes = count;
-          eliminatedIds = [nomineeId];
-        } else if (count === minVotes) {
-          eliminatedIds.push(nomineeId);
-        }
-      });
+      // If no winner, calculate weighted scores for remaining nominees
+      const weightedScores = this.calculateWeightedScores(currentVotes, activeNominees);
+      const eliminatedId = this.findLowestScoringNominee(weightedScores, firstChoiceVotes);
 
       // Record this round
-      const eliminatedNominee = nominees.find(n => n.id === eliminatedIds[0]);
+      const eliminatedNominee = nominees.find(n => n.id === eliminatedId);
       rounds.push({
         roundNumber: currentRound,
         eliminatedNominee,
-        voteCounts
+        voteCounts: firstChoiceVotes
       });
 
-      // Remove eliminated nominees from active list
-      activeNominees = activeNominees.filter(n => !eliminatedIds.includes(n.id));
-
-      // Remove eliminated nominees from each ballot's rankings
-      currentVotes = currentVotes.map(vote => ({
-        ...vote,
-        rankings: vote.rankings.filter(r => !eliminatedIds.includes(r))
-      }));
+      // Remove eliminated nominee and redistribute votes
+      activeNominees = activeNominees.filter(n => n.id !== eliminatedId);
+      currentVotes = this.redistributeVotes(currentVotes, eliminatedId);
 
       currentRound++;
 
-      // Safety checks
-      if (activeNominees.length === 0) {
-        throw new Error('No winner could be determined');
-      }
-
-      if (currentRound > nominees.length) {
+      if (currentRound > this.TOTAL_NOMINEES) {
         throw new Error('Voting exceeded maximum possible rounds');
       }
     }
   }
 
-  private validateInput(votes: Vote[], nominees: Nominee[]): void {
-    if (!votes.length || !nominees.length) {
-      throw new Error('Votes and nominees arrays cannot be empty');
+  private calculateWeightedScores(votes: Vote[], nominees: Nominee[]): Map<number, number> {
+    const scores = new Map<number, number>();
+    nominees.forEach(nominee => scores.set(nominee.id, 0));
+
+    votes.forEach(vote => {
+      // Add weighted scores based on position
+      vote.rankings.forEach((nomineeId, index) => {
+        const weight = this.POSITION_WEIGHTS[index];
+        scores.set(nomineeId, (scores.get(nomineeId) || 0) + weight);
+      });
+    });
+
+    return scores;
+  }
+
+  private findLowestScoringNominee(
+    weightedScores: Map<number, number>, 
+    firstChoiceVotes: Map<number, number>
+  ): number {
+    let lowestScore = Infinity;
+    let lowestFirstChoiceVotes = Infinity;
+    let lowestId = -1;
+
+    weightedScores.forEach((score, nomineeId) => {
+      const firstChoiceCount = firstChoiceVotes.get(nomineeId) || 0;
+      
+      // Primary criterion: lowest weighted score
+      // Secondary criterion: fewest first-choice votes
+      if (score < lowestScore || 
+         (score === lowestScore && firstChoiceCount < lowestFirstChoiceVotes)) {
+        lowestScore = score;
+        lowestFirstChoiceVotes = firstChoiceCount;
+        lowestId = nomineeId;
+      }
+    });
+
+    if (lowestId === -1) {
+      throw new Error('Could not determine nominee to eliminate');
     }
 
-    if (!Array.isArray(votes) || !Array.isArray(nominees)) {
-      throw new Error('Invalid input format');
+    return lowestId;
+  }
+
+  private redistributeVotes(votes: Vote[], eliminatedId: number): Vote[] {
+    return votes.map(vote => ({
+      ...vote,
+      rankings: vote.rankings.filter(r => r !== eliminatedId)
+    }));
+  }
+
+  private validateInput(votes: Vote[], nominees: Nominee[]): void {
+    if (!votes.length) {
+      throw new Error('Votes array cannot be empty');
     }
-    
+
     votes.forEach(vote => {
       if (!Array.isArray(vote.rankings) || 
+          vote.rankings.length !== this.TOTAL_NOMINEES ||
           !vote.rankings.every(r => typeof r === 'number')) {
-        throw new Error('Invalid vote format');
+        throw new Error('Each vote must rank exactly 10 nominees');
+      }
+
+      // Check for duplicate rankings
+      const uniqueRankings = new Set(vote.rankings);
+      if (uniqueRankings.size !== this.TOTAL_NOMINEES) {
+        throw new Error('Each nominee must be given a unique ranking');
       }
     });
   }
