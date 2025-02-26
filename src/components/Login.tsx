@@ -8,7 +8,18 @@ const LoadingSpinner = () => (
 const VerificationModal = ({ onClose }: { onClose: () => void }) => (
   <div className="verification-overlay">
     <div className="verification-modal">
-      <h2>Verifique seu Email</h2>
+      <h2 style={{
+        color: 'var(--oscar-gold)',
+        fontSize: '2rem',
+        marginBottom: '2rem',
+        letterSpacing: '2px',
+        textTransform: 'uppercase',
+        fontWeight: '300',
+        textAlign: 'center',
+        textShadow: '0 0 10px rgba(196, 169, 98, 0.3)'
+      }}>
+        Verifique seu Email
+      </h2>
       <div className="verification-content">
         <p style={{
           color: 'var(--oscar-gold)',
