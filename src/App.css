@@ -1,3 +1,11 @@
+:root {
+  --oscar-gold: #C4A962;
+  --oscar-dark-gold: #B69A52;
+  --oscar-black: #1A1A1A;
+  --oscar-white: #FFFFFF;
+  --oscar-gray: #2C2C2C;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -61,8 +69,8 @@
   font-weight: 300;
 }
 
-.verification-modal p {
-  color: #FFFF;
+.white-text {
+  color: #FFFFFF !important;
   margin-bottom: 1rem;
   line-height: 1.6;
   font-size: 1.1rem;
@@ -72,7 +80,7 @@
   color: var(--oscar-gold);
 }
 
-.verification-button {
+.modern-button {
   background: transparent;
   color: var(--oscar-gold);
   border: 2px solid var(--oscar-gold);
@@ -86,7 +94,7 @@
   margin-top: 1rem;
 }
 
-.verification-button:hover {
+.modern-button:hover {
   background: var(--oscar-gold);
   color: var(--oscar-black);
   transform: translateY(-2px);
@@ -118,4 +126,79 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Auth styles */
+.auth-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--oscar-gray);
+  border-radius: 8px;
+  border: 1px solid var(--oscar-gold);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid var(--oscar-gold);
+  border-radius: 4px;
+  background: var(--oscar-black);
+  color: var(--oscar-white);
+  font-size: 1rem;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: var(--oscar-dark-gold);
+  box-shadow: 0 0 0 2px rgba(196, 169, 98, 0.2);
+}
+
+.button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--oscar-gold);
+  color: var(--oscar-black);
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.switch-auth-button {
+  background: none;
+  border: none;
+  color: var(--oscar-gold);
+  cursor: pointer;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  text-decoration: underline;
+}
+
+.switch-auth-button:hover {
+  color: var(--oscar-dark-gold);
+}
+
+.error-message {
+  color: #dc3545;
+  text-align: center;
+  padding: 0.5rem;
 }

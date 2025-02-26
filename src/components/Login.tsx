@@ -10,42 +10,17 @@ const VerificationModal = ({ onClose }: { onClose: () => void }) => (
     <div className="verification-modal">
       <h2>Verifique seu Email</h2>
       <div className="verification-content">
-        <p style={{ color: '#FFFFFF' }}>
+        <div className="white-text">
           Enviamos um link de confirmação para o seu email.
           Por favor, verifique sua caixa de entrada e clique no link para ativar sua conta.
-        </p>
-        <p style={{ color: '#FFFFFF' }}>
+        </div>
+        <div className="white-text">
           <strong>Importante:</strong> Não se esqueça de verificar também sua pasta de spam!
-        </p>
+        </div>
       </div>
       <button 
         onClick={onClose} 
-        className="button"
-        style={{
-          background: 'transparent',
-          border: '2px solid var(--oscar-gold)',
-          color: 'var(--oscar-gold)',
-          padding: '0.8rem 2.5rem',
-          borderRadius: '25px',
-          fontSize: '1rem',
-          transition: 'all 0.3s ease',
-          textTransform: 'uppercase',
-          letterSpacing: '1px',
-          marginTop: '1rem',
-          cursor: 'pointer',
-        }}
-        onMouseOver={(e) => {
-          e.currentTarget.style.background = 'var(--oscar-gold)';
-          e.currentTarget.style.color = 'var(--oscar-black)';
-          e.currentTarget.style.transform = 'translateY(-2px)';
-          e.currentTarget.style.boxShadow = '0 4px 12px rgba(196, 169, 98, 0.3)';
-        }}
-        onMouseOut={(e) => {
-          e.currentTarget.style.background = 'transparent';
-          e.currentTarget.style.color = 'var(--oscar-gold)';
-          e.currentTarget.style.transform = 'none';
-          e.currentTarget.style.boxShadow = 'none';
-        }}
+        className="modern-button"
       >
         Entendi
       </button>
@@ -99,7 +74,6 @@ export function Login() {
       if (isSignUp) {
         await api.signUp(email, password);
         setShowVerificationModal(true);
-        // Clear form after successful signup
         setEmail('');
         setPassword('');
       } else {
@@ -166,12 +140,10 @@ export function Login() {
         {error && <div className="error-message" role="alert">{error}</div>}
       </form>
 
-      {showVerificationModal && (
-        <VerificationModal onClose={() => {
-          setShowVerificationModal(false);
-          setIsSignUp(false); // Switch back to login form
-        }} />
-      )}
+      {showVerificationModal && <VerificationModal onClose={() => {
+        setShowVerificationModal(false);
+        setIsSignUp(false);
+      }} />}
     </div>
   );
 }
