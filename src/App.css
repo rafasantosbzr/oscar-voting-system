@@ -44,14 +44,18 @@
 
 .verification-modal {
   background: var(--oscar-gray);
-  padding: 2.5rem;
-  border-radius: 8px;
-  border: 2px solid var(--oscar-gold);
   max-width: 400px;
   width: 90%;
-  text-align: center;
-  position: relative;
-  box-shadow: 0 4px 20px rgba(196, 169, 98, 0.2);
+}
+
+.verification-modal p {
+  color: var(--oscar-white);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.verification-modal strong {
+  color: var(--oscar-gold);
 }
 
 .verification-modal h3 {
@@ -63,12 +67,6 @@
   text-transform: uppercase;
 }
 
-.verification-modal p {
-  color: var(--oscar-light-gray);
-  margin-bottom: 1.5rem;
-  line-height: 1.8;
-  font-size: 1.1rem;
-}
 
 .verification-modal .close-button {
   background: var(--oscar-gold);
