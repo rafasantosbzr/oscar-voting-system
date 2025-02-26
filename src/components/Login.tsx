@@ -10,7 +10,7 @@ const VerificationModal = ({ onClose }: { onClose: () => void }) => (
     <div className="verification-modal">
       <h2 style={{
         color: 'var(--oscar-gold)',
-        fontSize: '2rem',
+        fontSize: '20px',
         marginBottom: '2rem',
         letterSpacing: '2px',
         textTransform: 'uppercase',
