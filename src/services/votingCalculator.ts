@@ -17,7 +17,7 @@ export class PreferentialVotingCalculator {
     const rounds = [];
     
     while (true) {
-      // Count first-choice votes
+      
       const firstChoiceVotes = new Map<number, number>();
       activeNominees.forEach(nominee => firstChoiceVotes.set(nominee.id, 0));
       
@@ -28,7 +28,6 @@ export class PreferentialVotingCalculator {
         }
       });
 
-      // Check for winner
       const totalVotes = currentVotes.length;
       const winningThreshold = totalVotes * this.WINNING_THRESHOLD_PERCENTAGE;
 
@@ -41,11 +40,9 @@ export class PreferentialVotingCalculator {
         }
       }
 
-      // If no winner, calculate weighted scores for remaining nominees
       const weightedScores = this.calculateWeightedScores(currentVotes, activeNominees);
       const eliminatedId = this.findLowestScoringNominee(weightedScores, firstChoiceVotes);
 
-      // Record this round
       const eliminatedNominee = nominees.find(n => n.id === eliminatedId);
       rounds.push({
         roundNumber: currentRound,
@@ -53,7 +50,6 @@ export class PreferentialVotingCalculator {
         voteCounts: firstChoiceVotes
       });
 
-      // Remove eliminated nominee and redistribute votes
       activeNominees = activeNominees.filter(n => n.id !== eliminatedId);
       currentVotes = this.redistributeVotes(currentVotes, eliminatedId);
 
@@ -74,15 +70,14 @@ export class PreferentialVotingCalculator {
     activeNominees.forEach(nominee => scores.set(nominee.id, 0));
 
     votes.forEach(vote => {
-      // Generate weights based on current number of active nominees
+      
       const weights = Array.from(
         { length: activeNominees.length }, 
         (_, i) => activeNominees.length - i
       );
 
-      // Add weighted scores based on current position
       vote.rankings.forEach((nomineeId, index) => {
-        if (scores.has(nomineeId)) { // Only count active nominees
+        if (scores.has(nomineeId)) {
           const weight = weights[index];
           scores.set(nomineeId, (scores.get(nomineeId) || 0) + weight);
         }
@@ -137,7 +132,6 @@ export class PreferentialVotingCalculator {
         throw new Error('Each initial vote must rank exactly 10 nominees');
       }
 
-      // Check for duplicate rankings
       const uniqueRankings = new Set(vote.rankings);
       if (uniqueRankings.size !== this.INITIAL_NOMINEES) {
         throw new Error('Each nominee must be given a unique ranking');

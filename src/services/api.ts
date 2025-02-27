@@ -3,7 +3,7 @@ import { Vote, Nominee } from '../types';
 
 const SITE_URL = import.meta.env.PROD 
   ? 'https://oscarvotingsystemsimulator.netlify.app'
-  : 'http://localhost:5173'; // Atualizado para porta do Vite
+  : 'http://localhost:5173'; 
 
 export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,

@@ -25,7 +25,6 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Add console.log to debug
   console.log('Nominees in App:', nominees);
   console.log('User:', user);
 
