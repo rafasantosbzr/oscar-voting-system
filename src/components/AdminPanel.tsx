@@ -25,7 +25,7 @@ export function AdminPanel() {
           </div>
 
           <div className="rounds-section">
-            <h3>Voting Rounds</h3>
+            <h3>Rodadas de Votos</h3>
             {result.rounds.map((round) => (
               <div key={round.roundNumber} className="round-card">
                 <h4>Round {round.roundNumber}</h4>
@@ -35,13 +35,13 @@ export function AdminPanel() {
                       <span className="nominee-name">
                         {nominees.find(n => n.id === nomineeId)?.title}
                       </span>
-                      <span className="vote-count">{count} votes</span>
+                      <span className="vote-count"> {count} votes</span>
                     </div>
                   ))}
                 </div>
                 {round.eliminatedNominee && (
                   <div className="eliminated-nominee">
-                    Eliminated: {round.eliminatedNominee.title}
+                    Eliminado: {round.eliminatedNominee.title}
                   </div>
                 )}
               </div>

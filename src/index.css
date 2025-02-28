@@ -304,6 +304,10 @@ body {
   color: var(--oscar-white);
 }
 
+.rounds-section {
+  color:var(--oscar-white);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .container {
