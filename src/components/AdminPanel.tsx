@@ -25,7 +25,6 @@ export function AdminPanel() {
           </div>
 
           <div className="rounds-section">
-            <h3>Rodadas de Votos</h3>
             {result.rounds.map((round) => (
               <div key={round.roundNumber} className="round-card">
                 <h4>Round {round.roundNumber}</h4>

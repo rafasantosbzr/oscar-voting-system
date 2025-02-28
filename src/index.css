@@ -304,8 +304,16 @@ body {
   color: var(--oscar-white);
 }
 
-.rounds-section {
+.round-card {
+  color:var(--oscar-gold);
+}
+
+.vote-counts {
   color:var(--oscar-white);
+}
+
+.vote-count {
+  color: var(--oscar-dark-gold)
 }
 
 /* Responsive adjustments */
