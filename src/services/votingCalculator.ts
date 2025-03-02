@@ -15,12 +15,11 @@ export class PreferentialVotingCalculator {
     let currentVotes = [...votes];
     let activeNominees = [...nominees];
     const rounds = [];
-    
+
     while (true) {
-      
       const firstChoiceVotes = new Map<number, number>();
       activeNominees.forEach(nominee => firstChoiceVotes.set(nominee.id, 0));
-      
+
       currentVotes.forEach(vote => {
         if (vote.rankings.length > 0) {
           const firstChoice = vote.rankings[0];
@@ -70,9 +69,8 @@ export class PreferentialVotingCalculator {
     activeNominees.forEach(nominee => scores.set(nominee.id, 0));
 
     votes.forEach(vote => {
-      
       const weights = Array.from(
-        { length: activeNominees.length }, 
+        { length: activeNominees.length },
         (_, i) => activeNominees.length - i
       );
 
@@ -88,23 +86,35 @@ export class PreferentialVotingCalculator {
   }
 
   private findLowestScoringNominee(
-    weightedScores: Map<number, number>, 
+    weightedScores: Map<number, number>,
     firstChoiceVotes: Map<number, number>
   ): number {
     let lowestScore = Infinity;
     let lowestFirstChoiceVotes = Infinity;
     let lowestId = -1;
 
+    let zeroVoteNominees: number[] = [];
+
     weightedScores.forEach((score, nomineeId) => {
       const firstChoiceCount = firstChoiceVotes.get(nomineeId) || 0;
-      
-      if (score < lowestScore || 
-         (score === lowestScore && firstChoiceCount < lowestFirstChoiceVotes)) {
+
+      if (firstChoiceCount === 0) {
+        zeroVoteNominees.push(nomineeId);
+      } else if (
+        score < lowestScore ||
+        (score === lowestScore && firstChoiceCount < lowestFirstChoiceVotes)
+      ) {
         lowestScore = score;
         lowestFirstChoiceVotes = firstChoiceCount;
         lowestId = nomineeId;
       }
     });
+
+    if (zeroVoteNominees.length > 0) {
+      return zeroVoteNominees.reduce((lowest, nomineeId) =>
+        weightedScores.get(nomineeId)! < weightedScores.get(lowest)! ? nomineeId : lowest
+      );
+    }
 
     if (lowestId === -1) {
       throw new Error('Could not determine nominee to eliminate');
@@ -126,9 +136,11 @@ export class PreferentialVotingCalculator {
     }
 
     votes.forEach(vote => {
-      if (!Array.isArray(vote.rankings) || 
-          vote.rankings.length !== this.INITIAL_NOMINEES ||
-          !vote.rankings.every(r => typeof r === 'number')) {
+      if (
+        !Array.isArray(vote.rankings) ||
+        vote.rankings.length !== this.INITIAL_NOMINEES ||
+        !vote.rankings.every(r => typeof r === 'number')
+      ) {
         throw new Error('Each initial vote must rank exactly 10 nominees');
       }
 
