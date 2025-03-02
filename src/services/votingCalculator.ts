@@ -17,17 +17,18 @@ export class PreferentialVotingCalculator {
     const rounds = [];
 
     while (true) {
+      // Count first-choice votes
       const firstChoiceVotes = new Map<number, number>();
       activeNominees.forEach(nominee => firstChoiceVotes.set(nominee.id, 0));
 
       currentVotes.forEach(vote => {
-        if (vote.rankings.length > 0) {
-          const firstChoice = vote.rankings[0];
+        const firstChoice = vote.rankings.find(id => firstChoiceVotes.has(id));
+        if (firstChoice !== undefined) {
           firstChoiceVotes.set(firstChoice, (firstChoiceVotes.get(firstChoice) || 0) + 1);
         }
       });
 
-      const totalVotes = currentVotes.length;
+      const totalVotes = Array.from(firstChoiceVotes.values()).reduce((sum, count) => sum + count, 0);
       const winningThreshold = totalVotes * this.WINNING_THRESHOLD_PERCENTAGE;
 
       for (const [nomineeId, count] of firstChoiceVotes.entries()) {
@@ -49,8 +50,11 @@ export class PreferentialVotingCalculator {
         voteCounts: firstChoiceVotes
       });
 
+      // Remove eliminated nominee from active nominees
       activeNominees = activeNominees.filter(n => n.id !== eliminatedId);
-      currentVotes = this.redistributeVotes(currentVotes, eliminatedId);
+
+      // Redistribute votes from eliminated nominee
+      currentVotes = this.redistributeVotes(currentVotes, eliminatedId, activeNominees);
 
       currentRound++;
 
@@ -123,10 +127,10 @@ export class PreferentialVotingCalculator {
     return lowestId;
   }
 
-  private redistributeVotes(votes: Vote[], eliminatedId: number): Vote[] {
+  private redistributeVotes(votes: Vote[], eliminatedId: number, activeNominees: Nominee[]): Vote[] {
     return votes.map(vote => ({
       ...vote,
-      rankings: vote.rankings.filter(r => r !== eliminatedId)
+      rankings: vote.rankings.filter(id => id !== eliminatedId).filter(id => activeNominees.some(n => n.id === id))
     }));
   }
 
