@@ -40,8 +40,8 @@ export function AdminPanel() {
                 </div>
                 {round.eliminatedNominee && (
                   <div className="eliminated-nominee">
-                    Eliminado: {round.eliminatedNominee.title}
-                    
+                    Eliminado: {round.eliminatedNominee.title} <br />
+
                   </div>
                 )}
               </div>
