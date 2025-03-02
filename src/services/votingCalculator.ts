@@ -40,14 +40,13 @@ export class PreferentialVotingCalculator {
         }
       }
 
-      const weightedScores = this.calculateWeightedScores(currentVotes, activeNominees);
-      const eliminatedId = this.findLowestScoringNominee(weightedScores, firstChoiceVotes);
+      const eliminatedId = this.findLowestScoringNominee(firstChoiceVotes);
 
       const eliminatedNominee = nominees.find(n => n.id === eliminatedId);
       rounds.push({
         roundNumber: currentRound,
         eliminatedNominee,
-        voteCounts: firstChoiceVotes
+        voteCounts: new Map(firstChoiceVotes)
       });
 
       // Remove eliminated nominee from active nominees
@@ -68,70 +67,22 @@ export class PreferentialVotingCalculator {
     }
   }
 
-  private calculateWeightedScores(votes: Vote[], activeNominees: Nominee[]): Map<number, number> {
-    const scores = new Map<number, number>();
-    activeNominees.forEach(nominee => scores.set(nominee.id, 0));
-
-    votes.forEach(vote => {
-      const weights = Array.from(
-        { length: activeNominees.length },
-        (_, i) => activeNominees.length - i
-      );
-
-      vote.rankings.forEach((nomineeId, index) => {
-        if (scores.has(nomineeId)) {
-          const weight = weights[index];
-          scores.set(nomineeId, (scores.get(nomineeId) || 0) + weight);
-        }
-      });
-    });
-
-    return scores;
-  }
-
-  private findLowestScoringNominee(
-    weightedScores: Map<number, number>,
-    firstChoiceVotes: Map<number, number>
-  ): number {
-    let lowestScore = Infinity;
-    let lowestFirstChoiceVotes = Infinity;
-    let lowestId = -1;
-
-    let zeroVoteNominees: number[] = [];
-
-    weightedScores.forEach((score, nomineeId) => {
-      const firstChoiceCount = firstChoiceVotes.get(nomineeId) || 0;
-
-      if (firstChoiceCount === 0) {
-        zeroVoteNominees.push(nomineeId);
-      } else if (
-        score < lowestScore ||
-        (score === lowestScore && firstChoiceCount < lowestFirstChoiceVotes)
-      ) {
-        lowestScore = score;
-        lowestFirstChoiceVotes = firstChoiceCount;
-        lowestId = nomineeId;
-      }
-    });
-
-    if (zeroVoteNominees.length > 0) {
-      return zeroVoteNominees.reduce((lowest, nomineeId) =>
-        weightedScores.get(nomineeId)! < weightedScores.get(lowest)! ? nomineeId : lowest
-      );
-    }
-
-    if (lowestId === -1) {
-      throw new Error('Could not determine nominee to eliminate');
-    }
-
-    return lowestId;
+  private findLowestScoringNominee(firstChoiceVotes: Map<number, number>): number {
+    let lowestVotes = Math.min(...Array.from(firstChoiceVotes.values()));
+    let lowestNominees = Array.from(firstChoiceVotes.entries())
+      .filter(([_, votes]) => votes === lowestVotes)
+      .map(([nomineeId]) => nomineeId);
+    return lowestNominees[0];
   }
 
   private redistributeVotes(votes: Vote[], eliminatedId: number, activeNominees: Nominee[]): Vote[] {
-    return votes.map(vote => ({
-      ...vote,
-      rankings: vote.rankings.filter(id => id !== eliminatedId).filter(id => activeNominees.some(n => n.id === id))
-    }));
+    return votes.map(vote => {
+      const newRankings = vote.rankings.filter(id => id !== eliminatedId);
+      return {
+        ...vote,
+        rankings: newRankings.filter(id => activeNominees.some(n => n.id === id))
+      };
+    });
   }
 
   private validateInput(votes: Vote[], nominees: Nominee[]): void {
