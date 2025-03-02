@@ -41,6 +41,7 @@ export function AdminPanel() {
                 {round.eliminatedNominee && (
                   <div className="eliminated-nominee">
                     Eliminado: {round.eliminatedNominee.title}
+                    
                   </div>
                 )}
               </div>
